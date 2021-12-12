@@ -15,7 +15,8 @@ let () =
 
 let namespace = Sys.argv.(1)
 let version = if n_args = 3 then Some Sys.argv.(2) else None
-let sources = Loader.generate_files "Core"
+let dest_dir = "./"
+let sources = Loader.generate_files dest_dir "Core"
 
 let get_data_structures_and_functions namespace ?version () =
   let open GI in
@@ -49,13 +50,11 @@ let get_data_structures_and_functions namespace ?version () =
       get_names 0 [] []
 
 let () =
-  let _ = Loader.write_constant_bindings_for namespace ?version sources [] in
-  let _ = Loader.write_enum_and_flag_bindings_for namespace ?version () in
+  Loader.write_constant_bindings_for namespace ?version sources [];
+  Loader.write_enum_and_flag_bindings_for namespace ?version dest_dir ();
   let data_structures, functions =
     get_data_structures_and_functions namespace ?version ()
   in
-  let _ =
-    Loader.write_function_bindings_for namespace ?version sources functions
-  in
-  let _ = Loader.write_bindings_for namespace ?version data_structures in
+  Loader.write_function_bindings_for namespace ?version sources functions;
+  Loader.write_bindings_for namespace ?version dest_dir data_structures;
   BG.Binding_utils.Sources.close sources
