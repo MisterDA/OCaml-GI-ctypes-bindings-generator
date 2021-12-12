@@ -60,7 +60,7 @@ let enum_type_view = "let t_view = view ~read:of_value ~write:to_value uint32_t"
 let test_append_enum_type test_ctxt =
   let namespace = "GLib" in
   let name = "TimeType" in
-  let writer name info sources =
+  let writer _name info sources =
     let open Binding_utils in
     let mli = Sources.mli sources in
     let ml = Sources.ml sources in
@@ -80,7 +80,7 @@ let test_append_enum_of_value_fn test_ctxt =
     match Binding_utils.type_tag_to_bindings_types tag with
     | Binding_utils.Not_implemented tag ->
         assert_equal_string tag "should be implemented"
-    | Binding_utils.Types { ocaml = ocaml_type; ctypes = ctypes_typ } ->
+    | Binding_utils.Types { ocaml = ocaml_type; _ } ->
         let values_and_variants = Bind_enum.get_values_and_variants info in
         let _ =
           Bind_enum.append_enum_of_value_fn name ocaml_type values_and_variants
@@ -100,7 +100,7 @@ let test_append_enum_to_value_fn test_ctxt =
     match Binding_utils.type_tag_to_bindings_types tag with
     | Binding_utils.Not_implemented tag ->
         assert_equal_string tag "should be implemented"
-    | Binding_utils.Types { ocaml = ocaml_type; ctypes = ctypes_typ } ->
+    | Binding_utils.Types { ocaml = ocaml_type; _ } ->
         let values_and_variants = Bind_enum.get_values_and_variants info in
         let _ =
           Bind_enum.append_enum_to_value_fn name ocaml_type values_and_variants
@@ -115,12 +115,12 @@ let test_append_enum_to_value_fn test_ctxt =
 let test_append_enum_view test_ctxt =
   let namespace = "GLib" in
   let name = "TimeType" in
-  let writer name info sources =
+  let writer _name info sources =
     let tag = Enum_info.get_storage_type info in
     match Binding_utils.type_tag_to_bindings_types tag with
     | Binding_utils.Not_implemented tag ->
         assert_equal_string tag "should be implemented"
-    | Binding_utils.Types { ocaml = ocaml_type; ctypes = ctypes_typ } ->
+    | Binding_utils.Types { ctypes = ctypes_typ; _ } ->
         let _ = Bind_enum.append_enum_view ctypes_typ sources in
         Binding_utils.Sources.write_buffs sources
   in
@@ -202,7 +202,7 @@ let flags_test namespace enum_name fn =
 let test_append_flags_types test_ctxt =
   let namespace = "GLib" in
   let name = "KeyFileFlags" in
-  let writer name info sources =
+  let writer _name info sources =
     let open Binding_utils in
     let mli = Sources.mli sources in
     let ml = Sources.ml sources in
@@ -222,7 +222,7 @@ let test_append_enum_flags_of_value_fn test_ctxt =
     match Binding_utils.type_tag_to_bindings_types tag with
     | Binding_utils.Not_implemented tag ->
         assert_equal_string tag "should be implemented"
-    | Binding_utils.Types { ocaml = ocaml_type; ctypes = ctypes_typ } ->
+    | Binding_utils.Types { ocaml = ocaml_type; _ } ->
         let values_and_variants = Bind_enum.get_values_and_variants info in
         Bind_enum.append_enum_of_value_fn name ocaml_type values_and_variants
           sources;
@@ -239,7 +239,7 @@ let test_append_enum_flags_to_value_fn test_ctxt =
     match Binding_utils.type_tag_to_bindings_types tag with
     | Binding_utils.Not_implemented tag ->
         assert_equal_string tag "should be implemented"
-    | Binding_utils.Types { ocaml = ocaml_type; ctypes = ctypes_typ } ->
+    | Binding_utils.Types { ocaml = ocaml_type; _ } ->
         let values_and_variants = Bind_enum.get_values_and_variants info in
         Bind_enum.append_enum_to_value_fn name ocaml_type values_and_variants
           sources;
@@ -256,7 +256,7 @@ let test_append_enum_flags_list_to_value_fn test_ctxt =
     match Binding_utils.type_tag_to_bindings_types tag with
     | Binding_utils.Not_implemented tag ->
         assert_equal_string tag "should be implemented"
-    | Binding_utils.Types { ocaml = ocaml_type; ctypes = ctypes_typ } ->
+    | Binding_utils.Types { ocaml = ocaml_type; _ } ->
         Bind_enum.append_flags_list_to_value_fn name ocaml_type sources;
         Binding_utils.Sources.write_buffs sources
   in
@@ -272,7 +272,7 @@ let test_append_enum_flags_list_of_value_fn test_ctxt =
     match Binding_utils.type_tag_to_bindings_types tag with
     | Binding_utils.Not_implemented tag ->
         assert_equal_string tag "should be implemented"
-    | Binding_utils.Types { ocaml = ocaml_type; ctypes = ctypes_typ } ->
+    | Binding_utils.Types { ocaml = ocaml_type; _ } ->
         let values_and_variants = Bind_enum.get_values_and_variants info in
         Bind_enum.append_flags_list_of_value_fn name ocaml_type
           values_and_variants sources;
@@ -285,12 +285,12 @@ let test_append_enum_flags_list_of_value_fn test_ctxt =
 let test_append_flags_view test_ctxt =
   let namespace = "GLib" in
   let name = "KeyFileFlags" in
-  let writer name info sources =
+  let writer _name info sources =
     let tag = Enum_info.get_storage_type info in
     match Binding_utils.type_tag_to_bindings_types tag with
     | Binding_utils.Not_implemented tag ->
         assert_equal_string tag "should be implemented"
-    | Binding_utils.Types { ocaml = ocaml_type; ctypes = ctypes_typ } ->
+    | Binding_utils.Types { ctypes = ctypes_typ; _ } ->
         Bind_enum.append_flags_view ctypes_typ sources;
         Binding_utils.Sources.write_buffs sources
   in

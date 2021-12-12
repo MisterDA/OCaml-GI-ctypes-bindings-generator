@@ -39,7 +39,7 @@ let union_test namespace union_name fn =
 let test_append_ctypes_union_declaration test_ctxt =
   let namespace = "GLib" in
   let name = "Mutex" in
-  let writer name info sources =
+  let writer name _info sources =
     Bind_union.append_ctypes_union_declaration name sources;
     Binding_utils.Sources.write_buffs sources
   in
@@ -48,22 +48,22 @@ let test_append_ctypes_union_declaration test_ctxt =
   union_test namespace name (fun info ->
       test_writing test_ctxt info name writer mli_content ml_content)
 
-let test_append_ctypes_union_fields_declarations test_ctxt =
+let test_append_ctypes_union_fields_declarations _test_ctxt =
   let namespace = "GLib" in
   let name = "Mutex" in
-  let writer name info sources =
+  let _writer name info sources =
     Bind_union.append_ctypes_union_fields_declarations name info sources [];
     Binding_utils.Sources.write_buffs sources
   in
-  let mli_content =
+  let _mli_content =
     "val f_p: (unit ptr, t union) field\n\
      val f_i: (Array.t structure, t union) field"
   in
-  let ml_content =
+  let _ml_content =
     "let f_p = field t_typ \"p\" (ptr void)\n\
      let f_i = field t_typ \"i\" (Array.t_typ)"
   in
-  union_test namespace name (fun info ->
+  union_test namespace name (fun _info ->
       (* TODO : Implement Binding_utils.type_info_to_bindings_types for C array
        * before re-enabling this.
        test_writing test_ctxt info name writer mli_content ml_content

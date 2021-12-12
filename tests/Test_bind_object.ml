@@ -24,7 +24,7 @@ open GObject_introspection
 let get_object_info namespace name =
   match Repository.require namespace () with
   | Error _ -> None
-  | Ok typelib -> (
+  | Ok _typelib -> (
       match Repository.find_by_name namespace name with
       | None -> None
       | Some base_info -> (
@@ -42,7 +42,7 @@ let object_test namespace name fn =
 let test_append_ctypes_object_declaration test_ctxt =
   let namespace = "GObject" in
   let name = "Object" in
-  let writer name info sources =
+  let writer name _info sources =
     let _ = Bind_object.append_ctypes_object_declaration name sources in
     Binding_utils.Sources.write_buffs sources
   in

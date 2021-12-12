@@ -40,7 +40,7 @@ let test_function_info name fn =
   | None -> assert_equal_string name "No base info found"
   | Some info -> fn info
 
-let test_get_arguments_types test_ctx =
+let test_get_arguments_types _test_ctx =
   test_function_info name (fun info ->
       let open Bind_function in
       let ci = Function_info.to_callableinfo info in
@@ -54,7 +54,7 @@ let test_get_arguments_types test_ctx =
           in
           assert_equal_string "string string" flat)
 
-let test_get_return_types test_ctx =
+let test_get_return_types _test_ctx =
   test_function_info name (fun info ->
       let callable = Function_info.to_callableinfo info in
       match Bind_function.get_return_types callable "Core" [] with

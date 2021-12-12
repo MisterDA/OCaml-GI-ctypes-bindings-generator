@@ -39,7 +39,7 @@ let struct_test namespace struct_name fn =
 let test_append_ctypes_struct_declaration test_ctxt =
   let namespace = "GLib" in
   let name = "Array" in
-  let writer name info sources =
+  let writer name _info sources =
     let _ = Bind_struct.append_ctypes_struct_declaration name sources in
     Binding_utils.Sources.write_buffs sources
   in

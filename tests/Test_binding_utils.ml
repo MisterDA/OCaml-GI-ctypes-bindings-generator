@@ -20,33 +20,33 @@ open Test_utils
 open OUnit2
 open GI_bindings_generator
 
-let test_escape_OCaml_keywords test_ctxt =
+let test_escape_OCaml_keywords _test_ctxt =
   let escaped = Binding_utils.escape_OCaml_keywords "end" in
   assert_equal_string "_end" escaped
 
-let test_escape_OCaml_types test_ctxt =
+let test_escape_OCaml_types _test_ctxt =
   let escaped = Binding_utils.escape_OCaml_types "int" in
   assert_equal_string "_int" escaped
 
-let test_escape_Ctypes_types test_ctxt =
+let test_escape_Ctypes_types _test_ctxt =
   let escaped = Binding_utils.escape_Ctypes_types "double" in
   assert_equal_string "_double" escaped
 
-let test_escape_number_at_beginning test_ctxt =
+let test_escape_number_at_beginning _test_ctxt =
   let escaped = Binding_utils.escape_number_at_beginning "3D" in
   assert_equal_string "_3D" escaped
 
-let test_ensure_valid_variable_name test_ctxt =
-  let rec test = function
+let test_ensure_valid_variable_name _test_ctxt =
+  let test = function
     | [] -> ()
-    | h :: q ->
+    | h :: _ ->
         let reference = "_" ^ h in
         let escaped = Binding_utils.ensure_valid_variable_name h in
         assert_equal_string reference escaped
   in
   test [ "end"; "int"; "double"; "3D" ]
 
-let test_lexer_snake_case test_ctxt =
+let test_lexer_snake_case _test_ctxt =
   let values =
     [
       ("CapitalizedSnakeCase", "Capitalized_snake_case");
@@ -70,7 +70,7 @@ let test_lexer_snake_case test_ctxt =
   in
   _check values
 
-let test_string_pattern_remove test_ctxt =
+let test_string_pattern_remove _test_ctxt =
   let values =
     [
       ("pattern", "pattern", "");
@@ -89,7 +89,7 @@ module USources = Binding_utils.Sources
 
 let pwd = Sys.getcwd ()
 
-let test_file_create test_ctxt =
+let test_file_create _test_ctxt =
   let filename = "test_file" in
   let test_f = UFile.create pwd filename in
   let test_f_name = UFile.name test_f in
@@ -98,7 +98,7 @@ let test_file_create test_ctxt =
   let _ = UFile.close test_f in
   Sys.remove filename
 
-let test_file_write_open_module test_ctxt =
+let test_file_write_open_module _test_ctxt =
   let filename = "test_file1" in
   let path = String.concat "/" [ pwd; filename ] in
   let test_f = UFile.create pwd filename in
@@ -108,7 +108,7 @@ let test_file_write_open_module test_ctxt =
   let _ = check_file_and_content path expected_content in
   Sys.remove path
 
-let test_file_buffer_add test_ctxt =
+let test_file_buffer_add _test_ctxt =
   let filename = "test_file4" in
   let path = String.concat "/" [ pwd; filename ] in
   let str = "a test string" in
@@ -120,7 +120,7 @@ let test_file_buffer_add test_ctxt =
   let _ = UFile.close test_f in
   Sys.remove path
 
-let test_file_buffer_add_line test_ctxt =
+let test_file_buffer_add_line _test_ctxt =
   let filename = "test_file5" in
   let path = String.concat "/" [ pwd; filename ] in
   let str = "a test string" in
@@ -132,7 +132,7 @@ let test_file_buffer_add_line test_ctxt =
   let _ = UFile.close test_f in
   Sys.remove path
 
-let test_file_buffer_add_comments test_ctxt =
+let test_file_buffer_add_comments _test_ctxt =
   let filename = "test_file6" in
   let path = String.concat "/" [ pwd; filename ] in
   let str = "a test string" in
@@ -144,7 +144,7 @@ let test_file_buffer_add_comments test_ctxt =
   let _ = UFile.close test_f in
   Sys.remove path
 
-let test_file_bprintf test_ctxt =
+let test_file_bprintf _test_ctxt =
   let filename = "test_file7" in
   let path = String.concat "/" [ pwd; filename ] in
   let str = "a test string" in
@@ -156,7 +156,7 @@ let test_file_bprintf test_ctxt =
   let _ = UFile.close test_f in
   Sys.remove path
 
-let test_file_create_sources test_ctxt =
+let test_file_create_sources _test_ctxt =
   let filename = "test_file2" in
   let path = String.concat "/" [ pwd; filename ] in
   let _ = USources.create pwd filename in
@@ -165,7 +165,7 @@ let test_file_create_sources test_ctxt =
   let _ = Sys.remove @@ filename ^ ".ml" in
   Sys.remove @@ path ^ ".mli"
 
-let test_file_create_ctypes_sources test_ctxt =
+let test_file_create_ctypes_sources _test_ctxt =
   let filename = "test_file3" in
   let path = String.concat "/" [ pwd; filename ] in
   let sources = USources.create_ctypes pwd filename in
@@ -227,13 +227,13 @@ let test_sources_buffs_add_comments test_ctxt =
   let _ = check_file_and_content mli_file mli_content in
   check_file_and_content ml_file ml_content
 
-let test_match_one_of test_ctxt =
+let test_match_one_of _test_ctxt =
   let patterns = [ "to*"; "Ho*" ] in
   assert_equal_boolean true (Binding_utils.match_one_of "Hook" patterns);
   assert_equal_boolean false (Binding_utils.match_one_of "hook" patterns);
   assert_equal_boolean false (Binding_utils.match_one_of "_to" patterns)
 
-let test_generate_n_meaningless_arg_names test_ctxt =
+let test_generate_n_meaningless_arg_names _test_ctxt =
   let args = Binding_utils.generate_n_meaningless_arg_names 4 in
   assert_equal_string "arg1 arg2 arg3 arg4" args
 
