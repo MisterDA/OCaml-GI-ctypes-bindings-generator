@@ -36,7 +36,7 @@ let append_ctypes_object_property_declarations _object_name info sources
   let append_setter_for _prop_info = () in
   let append_getter_for _prop_info = () in
   let n = Object_info.get_n_properties info in
-  let rec iterate_over_props index =
+  let iterate_over_props index =
     if index = n then ()
     else
       let prop_info = Object_info.get_property info index in

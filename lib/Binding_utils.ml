@@ -318,7 +318,7 @@ let get_data_types_of_container type_info =
     | Bindings.Types.Interface | Bindings.Types.GType ) as tag ->
       Not_implemented (Bindings.Types.string_of_tag tag)
 
-let rec type_info_to_bindings_types type_info maybe_null =
+let type_info_to_bindings_types type_info maybe_null =
   let check_if_pointer = check_if_pointer type_info maybe_null in
   let get_full_types_of_container suffix_type =
     let data_type =
