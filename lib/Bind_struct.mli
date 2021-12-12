@@ -20,7 +20,6 @@
     OCaml code for C structures. *)
 
 open Ctypes
-open Foreign
 open GObject_introspection
 
 val append_ctypes_struct_declaration : string -> Binding_utils.Sources.t -> unit

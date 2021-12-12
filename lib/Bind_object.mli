@@ -20,7 +20,6 @@
     OCaml code for C gobject. *)
 
 open Ctypes
-open Foreign
 open GObject_introspection
 
 val append_ctypes_object_declaration : string -> Binding_utils.Sources.t -> unit

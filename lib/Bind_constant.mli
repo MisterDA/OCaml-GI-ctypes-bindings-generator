@@ -20,7 +20,6 @@
     OCaml code for module values. *)
 
 open Ctypes
-open Foreign
 open GObject_introspection
 
 val binding_constant_name : string -> string

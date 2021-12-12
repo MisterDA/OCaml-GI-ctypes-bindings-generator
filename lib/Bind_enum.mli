@@ -21,7 +21,6 @@
     OR"ed". *)
 
 open Ctypes
-open Foreign
 open GObject_introspection
 
 val append_enum_type : (string * string) list -> Binding_utils.File.t -> unit

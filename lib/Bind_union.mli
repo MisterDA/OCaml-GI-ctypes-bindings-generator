@@ -20,7 +20,6 @@
     OCaml code for C unions. *)
 
 open Ctypes
-open Foreign
 open GObject_introspection
 
 val append_ctypes_union_declaration : string -> Binding_utils.Sources.t -> unit

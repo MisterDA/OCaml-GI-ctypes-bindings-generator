@@ -16,7 +16,6 @@
  * along with OCaml-GObject-Introspection.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-open Ctypes
 open GObject_introspection
 
 let generate_files dest_dir name =
@@ -125,7 +124,6 @@ let write_enum_and_flag_bindings_for namespace ?version dest_dir () =
       done
 
 let write_function_bindings_for namespace ?version sources functions =
-  let open Binding_utils in
   let rec loop = function
     | [] -> ()
     | name :: others ->

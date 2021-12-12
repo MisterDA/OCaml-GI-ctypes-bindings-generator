@@ -17,7 +17,6 @@
  *)
 
 open Ctypes
-open Foreign
 open GObject_introspection
 
 (** Binding_utils module : Regroups a set of functions and sub-modules needed

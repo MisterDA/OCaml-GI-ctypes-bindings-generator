@@ -16,12 +16,8 @@
  * along with OCaml-GObject-Introspection.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-open Ctypes
 (** Loader : type and functions in order to read the GObject-Introspection of
     an instrospectable library and generate Ctypes bindings. *)
-
-open Foreign
-open GObject_introspection
 
 val generate_files : string -> string -> Binding_utils.Sources.t
 (** Generate file sources for code generator *)
