@@ -429,8 +429,8 @@ let write_function_name ml name arguments can_throw_gerror =
       with
       | None, None, None, false -> File.bprintf ml "let %s =\n" name
       | None, None, None, true -> File.bprintf ml "let %s () =\n" name
-      | None, Some out_params, None, _ -> File.bprintf ml "let %s () =\n" name
-      | Some in_params, None, None, false -> File.bprintf ml "let %s =\n" name
+      | None, Some _out_params, None, _ -> File.bprintf ml "let %s () =\n" name
+      | Some _in_params, None, None, false -> File.bprintf ml "let %s =\n" name
       | Some in_params, _, None, _ ->
           File.bprintf ml "let %s %s =\n" name in_params
       | None, _, Some in_out_params, _ ->
@@ -774,7 +774,7 @@ let write_build_return_value_instructions ml name arguments can_throw_gerror
             let _ = File.buff_add_line ml "  in" in
             File.bprintf ml "%s"
               (return_gerror_result ~ret:"(get_ret_value ())" ())
-        | Some ret, Some args_out, None ->
+        | Some _ret, Some args_out, None ->
             let _ = File.bprintf ml "  let get_ret_value () =\n" in
             let _ = File.bprintf ml "    %s" args_out in
             let _ = File.bprintf ml "    (ret, %s)\n" args_out_tuple in
@@ -788,7 +788,7 @@ let write_build_return_value_instructions ml name arguments can_throw_gerror
             let _ = File.buff_add_line ml "  in" in
             File.bprintf ml "%s"
               (return_gerror_result ~ret:"(get_ret_value ())" ())
-        | Some ret, None, Some args_in_out ->
+        | Some _ret, None, Some args_in_out ->
             let _ = File.bprintf ml "  let get_ret_value () =\n" in
             let _ = File.bprintf ml "    %s" args_in_out in
             let _ = File.bprintf ml "    (ret, %s)\n" args_in_out_tuple in
@@ -805,7 +805,7 @@ let write_build_return_value_instructions ml name arguments can_throw_gerror
             let _ = File.buff_add_line ml "  in" in
             File.bprintf ml "%s"
               (return_gerror_result ~ret:"(get_ret_value ())" ())
-        | Some ret, Some args_out, Some args_in_out ->
+        | Some _ret, Some args_out, Some args_in_out ->
             let _ = File.bprintf ml "  let get_ret_value () =\n" in
             let _ = File.bprintf ml "    %s" args_out in
             let _ = File.bprintf ml "    %s" args_in_out in
@@ -823,20 +823,20 @@ let write_build_return_value_instructions ml name arguments can_throw_gerror
         | None, Some args_out, None ->
             let _ = File.bprintf ml "  %s" args_out in
             File.bprintf ml "  (%s)\n" args_out_tuple
-        | Some ret, Some args_out, None ->
+        | Some _ret, Some args_out, None ->
             let _ = File.bprintf ml "  %s" args_out in
             File.bprintf ml "  (ret, %s)\n" args_out_tuple
         | None, None, Some args_in_out ->
             let _ = File.bprintf ml "  %s" args_in_out in
             File.bprintf ml "  (%s)\n" args_in_out_tuple
-        | Some ret, None, Some args_in_out ->
+        | Some _ret, None, Some args_in_out ->
             let _ = File.bprintf ml "  %s" args_in_out in
             File.bprintf ml "  (ret, %s)\n" args_in_out_tuple
         | None, Some args_out, Some args_in_out ->
             let _ = File.bprintf ml "  %s" args_out in
             let _ = File.bprintf ml "  %s" args_in_out in
             File.bprintf ml "  (%s, %s)\n" args_out_tuple args_in_out_tuple
-        | Some ret, Some args_out, Some args_in_out ->
+        | Some _ret, Some args_out, Some args_in_out ->
             let _ = File.bprintf ml "  %s" args_out in
             let _ = File.bprintf ml "  %s" args_in_out in
             File.bprintf ml "  (ret, %s, %s)\n" args_out_tuple args_in_out_tuple

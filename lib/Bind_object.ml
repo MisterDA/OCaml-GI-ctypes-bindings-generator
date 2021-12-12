@@ -18,7 +18,7 @@
 
 open GObject_introspection
 
-let append_ctypes_object_declaration name sources =
+let append_ctypes_object_declaration _name sources =
   let open Binding_utils in
   let mli = Sources.mli sources in
   let ml = Sources.ml sources in
@@ -28,13 +28,13 @@ let append_ctypes_object_declaration name sources =
   File.bprintf ml "let t_typ : t typ = ptr void\n";
   Sources.buffs_add_eol sources
 
-let append_ctypes_object_property_declarations object_name info sources
-    skip_types =
+let append_ctypes_object_property_declarations _object_name info sources
+    _skip_types =
   let open Binding_utils in
   let _mli = Sources.mli sources in
   let _ml = Sources.ml sources in
-  let append_setter_for prop_info = () in
-  let append_getter_for prop_info = () in
+  let append_setter_for _prop_info = () in
+  let append_getter_for _prop_info = () in
   let n = Object_info.get_n_properties info in
   let rec iterate_over_props index =
     if index = n then ()

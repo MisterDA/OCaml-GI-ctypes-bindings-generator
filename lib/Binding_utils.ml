@@ -323,7 +323,7 @@ let rec type_info_to_bindings_types type_info maybe_null =
   let get_full_types_of_container suffix_type =
     let data_type =
       match get_data_types_of_container type_info with
-      | Types { ocaml; ctypes } -> ocaml
+      | Types { ocaml; _ } -> ocaml
       | Not_implemented tag -> "Not implemented : " ^ tag
     in
     let container_type =
@@ -660,12 +660,12 @@ let allocate_out_argument_with_default_value type_info var_name maybe_null
       | Bindings.Base_info.Unresolved as t ->
           Error (Bindings.Base_info.string_of_info_type t))
 
-let get_out_argument_value type_info var_name maybe_null =
+let get_out_argument_value type_info var_name _maybe_null =
   let _get_value_simple_instructions () =
     let s = Printf.sprintf "let %s = !@ %s_ptr in\n" var_name var_name in
     Ok s
   in
-  let _get_value_enum_instructions name =
+  let _get_value_enum_instructions _name =
     let s = Printf.sprintf "let %s = (!@ %s_ptr) in\n" var_name var_name in
     Ok s
   in

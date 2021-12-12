@@ -28,7 +28,7 @@ let rec write_bindings_for namespace ?version dest_dir = function
       let _ =
         match Repository.require namespace ?version () with
         | Error message -> print_endline message
-        | Ok typelib -> (
+        | Ok _typelib -> (
             match Repository.find_by_name namespace name with
             | None ->
                 let strs =
@@ -81,7 +81,7 @@ let write_constant_bindings_for namespace ?version sources skipped =
   let open Binding_utils in
   match Repository.require namespace ?version () with
   | Error message -> print_endline message
-  | Ok typelib ->
+  | Ok _typelib ->
       let n = Repository.get_n_infos namespace in
       for i = 0 to n - 1 do
         let bi = Repository.get_info namespace i in
@@ -102,7 +102,7 @@ let write_enum_and_flag_bindings_for namespace ?version dest_dir () =
   let open Binding_utils in
   match Repository.require namespace ?version () with
   | Error message -> print_endline message
-  | Ok typelib ->
+  | Ok _typelib ->
       let n = Repository.get_n_infos namespace in
       for i = 0 to n - 1 do
         let bi = Repository.get_info namespace i in
@@ -130,7 +130,7 @@ let write_function_bindings_for namespace ?version sources functions =
         let _ =
           match Repository.require namespace ?version () with
           | Error message -> print_endline message
-          | Ok typelib -> (
+          | Ok _typelib -> (
               match Repository.find_by_name namespace name with
               | None ->
                   let strs =

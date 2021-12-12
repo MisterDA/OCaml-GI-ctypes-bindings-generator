@@ -53,7 +53,7 @@ let append_enum_of_value_fn enum_name ocaml_type values_and_variants sources =
   File.bprintf ml "  else raise (Invalid_argument \"Unexpected %s value\")\n"
     enum_name
 
-let append_enum_to_value_fn enum_name ocaml_type values_and_variants sources =
+let append_enum_to_value_fn _enum_name ocaml_type values_and_variants sources =
   let open Binding_utils in
   let mli = Sources.mli sources in
   let ml = Sources.ml sources in
@@ -131,7 +131,7 @@ let append_flags_types values_and_variants file =
   |> File.bprintf file "type t = %s\n";
   File.buff_add_line file "type t_list = t list"
 
-let append_flags_list_to_value_fn enum_name ocaml_type sources =
+let append_flags_list_to_value_fn _enum_name ocaml_type sources =
   let open Binding_utils in
   let mli = Sources.mli sources in
   let ml = Sources.ml sources in
@@ -150,7 +150,7 @@ let append_flags_list_to_value_fn enum_name ocaml_type sources =
   File.buff_add_line ml "  in";
   File.buff_add_line ml "  logor_flags flags zero"
 
-let append_flags_list_of_value_fn enum_name ocaml_type values_and_variants
+let append_flags_list_of_value_fn _enum_name ocaml_type values_and_variants
     sources =
   let open Binding_utils in
   let mli = Sources.mli sources in

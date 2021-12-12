@@ -147,7 +147,7 @@ let parse_constant_info info sources =
   | Some name ->
       let info' = Constant_info.from_baseinfo info in
       let type_info = Constant_info.get_type info' in
-      let not_implemented_todo_comments tag (mli, ml) =
+      let not_implemented_todo_comments tag (mli, _ml) =
         let tag_name = Bindings.Types.string_of_tag tag in
         File.bprintf mli "(* TODO : constant %s type not implemented for %s *)"
           name tag_name;
