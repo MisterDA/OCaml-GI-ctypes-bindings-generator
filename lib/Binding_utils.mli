@@ -118,7 +118,7 @@ module File : sig
 
   val create : string -> string -> t
 
-  val create_tmp : string * Pervasives.out_channel -> t
+  val create_tmp : string * out_channel -> t
   (** Used in tests with oUnit. *)
 
   val close : t -> unit
@@ -126,7 +126,7 @@ module File : sig
   val name : t -> string
   (** Get the filename of the File.t value. *)
 
-  val descr : t -> Pervasives.out_channel
+  val descr : t -> out_channel
   (** Get the file descriptor of the File.t value. *)
 
   val buffer : t -> Buffer.t

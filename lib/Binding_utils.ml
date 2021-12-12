@@ -109,7 +109,7 @@ module File = struct
   type t = {
     name : string;
     dest_dir : string;
-    descr : Pervasives.out_channel;
+    descr : out_channel;
     buffer : Buffer.t;
   }
 
@@ -117,7 +117,7 @@ module File = struct
     let flags = [ Open_trunc; Open_append; Open_creat ] in
     let perm = 0o666 in
     let path = (dest_dir ^ "/") ^ name in
-    let descr = Pervasives.open_out_gen flags perm path in
+    let descr = open_out_gen flags perm path in
     let buffer = Buffer.create 16 in
     { name; dest_dir; descr; buffer }
 
@@ -127,7 +127,7 @@ module File = struct
 
   let close t =
     if Sys.file_exists t.name then (
-      Pervasives.close_out t.descr;
+      close_out t.descr;
       Buffer.reset t.buffer)
 
   let name t = t.name
