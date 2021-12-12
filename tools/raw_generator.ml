@@ -20,8 +20,8 @@ let sources = Loader.generate_files "Core"
 let get_data_structures_and_functions namespace ?version () =
   let open GI in
   match Repository.require namespace ?version () with
-  | Error message -> ([], [])
-  | Ok typelib ->
+  | Error _message -> ([], [])
+  | Ok _typelib ->
       let n = Repository.get_n_infos namespace in
       let rec get_names index data_structures functions =
         if index >= n then (data_structures, functions)
