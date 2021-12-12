@@ -32,35 +32,36 @@ let test_loader_with_good_namespace test_ctxt =
 
 let test_loader namespace fn =
   match Loader.load namespace () with
-  | Error message -> assert_equal_string "Please provide  a good namespace" message
+  | Error message ->
+      assert_equal_string "Please provide  a good namespace" message
   | Ok loader -> fn loader
 
 let test_loader_get_namespace test_ctxt =
   test_loader "Gtk" (fun loader ->
-      assert_equal_string "Gtk" (Loader.get_namespace loader)
-    )
+      assert_equal_string "Gtk" (Loader.get_namespace loader))
 
 let test_loader_get_version_good test_ctxt =
   let version = "3.0" in
   match Loader.load "Gtk" ~version () with
   | Error message -> assert_equal_string "Unable to get anything" message
-  | Ok loader -> let v = Loader.get_version loader in
-    assert_equal_string version v
+  | Ok loader ->
+      let v = Loader.get_version loader in
+      assert_equal_string version v
 
 let test_loader_get_version_bad test_ctxt =
   let version = "123.0" in
   match Loader.load "Gtk" ?version:(Some version) () with
   | Error message -> assert_equal_string "Unable to get anything" message
-  | Ok loader -> let v = Loader.get_version loader in
-    assert_equal_string "3.0" v
+  | Ok loader ->
+      let v = Loader.get_version loader in
+      assert_equal_string "3.0" v
 
 let test_loader_generate_dir test_ctxt =
-test_loader "Gtk" (fun loader ->
-    Loader.generate_dir loader;
-    assert_file_exists "Gtk";
-    assert_equal_boolean true (Sys.is_directory "Gtk");
-    Unix.rmdir "Gtk";
-    )
+  test_loader "Gtk" (fun loader ->
+      Loader.generate_dir loader;
+      assert_file_exists "Gtk";
+      assert_equal_boolean true (Sys.is_directory "Gtk");
+      Unix.rmdir "Gtk")
 
 open Loader
 
@@ -79,20 +80,26 @@ let test_loader_generate_main_module_files test_ctxt =
         let filename = File.name file in
         assert_file_exists filename;
         File.close file;
-        Sys.remove filename;
+        Sys.remove filename
       in
       test_close_and_remove ml;
-      test_close_and_remove mli;
-    )
+      test_close_and_remove mli)
 
 let tests =
-  "GObject Introspection Loader tests" >:::
-  [
-    "GObject Introspection Loader with bad namespace" >:: test_loader_with_bad_namespace;
-    "GObject Introspection Loader with good namespace" >:: test_loader_with_good_namespace;
-    "GObject Introspection Loader get namespace" >:: test_loader_get_namespace;
-    "GObject Introspection Loader get version good" >:: test_loader_get_version_good;
-    "GObject Introspection Loader get version bad" >:: test_loader_get_version_bad;
-    "GObject Introspection Loader generate dir" >:: test_loader_generate_dir;
-    "GObject Introspection Loader generate main module files" >:: test_loader_generate_main_module_files
-  ]
+  "GObject Introspection Loader tests"
+  >::: [
+         "GObject Introspection Loader with bad namespace"
+         >:: test_loader_with_bad_namespace;
+         "GObject Introspection Loader with good namespace"
+         >:: test_loader_with_good_namespace;
+         "GObject Introspection Loader get namespace"
+         >:: test_loader_get_namespace;
+         "GObject Introspection Loader get version good"
+         >:: test_loader_get_version_good;
+         "GObject Introspection Loader get version bad"
+         >:: test_loader_get_version_bad;
+         "GObject Introspection Loader generate dir"
+         >:: test_loader_generate_dir;
+         "GObject Introspection Loader generate main module files"
+         >:: test_loader_generate_main_module_files;
+       ]

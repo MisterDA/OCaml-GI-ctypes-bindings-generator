@@ -24,53 +24,53 @@ open GObject_introspection
 let get_struct_info namespace struct_name =
   match Repository.find_by_name namespace struct_name with
   | None -> None
-  | Some bi ->
-    match Base_info.get_type bi with
-    | Bindings.Base_info.Struct -> let si = Struct_info.from_baseinfo bi in
-      Some si
-    | _ -> None
+  | Some bi -> (
+      match Base_info.get_type bi with
+      | Bindings.Base_info.Struct ->
+          let si = Struct_info.from_baseinfo bi in
+          Some si
+      | _ -> None)
 
 let struct_test namespace struct_name fn =
   match get_struct_info namespace struct_name with
   | None -> assert_equal_string struct_name "No base info found"
-  | Some (info) -> fn info
+  | Some info -> fn info
 
 let test_append_ctypes_struct_declaration test_ctxt =
   let namespace = "GLib" in
   let name = "Array" in
-  let writer = fun name info sources -> (
+  let writer name info sources =
     let _ = Bind_struct.append_ctypes_struct_declaration name sources in
     Binding_utils.Sources.write_buffs sources
-  )
   in
-  let mli = "type t\n\
-             val t_typ : t structure typ\n" in
-  let ml = "type t\n\
-            let t_typ : t structure typ = structure \"Array\"\n" in
+  let mli = "type t\nval t_typ : t structure typ\n" in
+  let ml = "type t\nlet t_typ : t structure typ = structure \"Array\"\n" in
   struct_test namespace name (fun info ->
-    test_writing test_ctxt info name writer mli ml
-    )
+      test_writing test_ctxt info name writer mli ml)
 
 let test_append_ctypes_struct_field_declarations test_ctxt =
   let namespace = "GLib" in
   let name = "SList" in
-  let writer = fun n i srcs -> (
+  let writer n i srcs =
     let _ = Bind_struct.append_ctypes_struct_field_declarations n i srcs [] in
     Binding_utils.Sources.write_buffs srcs
-  )
   in
-  let mli = "val f_data: (unit ptr, t structure) field\n\
-             val f_next: (t structure ptr, t structure) field\n" in
-  let ml = "let f_data = field t_typ \"data\" (ptr void)\n\
-            let f_next = field t_typ \"next\" (ptr t_typ)\n\
-            let _ = seal t_typ\n" in
+  let mli =
+    "val f_data: (unit ptr, t structure) field\n\
+     val f_next: (t structure ptr, t structure) field\n"
+  in
+  let ml =
+    "let f_data = field t_typ \"data\" (ptr void)\n\
+     let f_next = field t_typ \"next\" (ptr t_typ)\n\
+     let _ = seal t_typ\n"
+  in
   struct_test namespace name (fun info ->
-      test_writing test_ctxt info name writer mli ml
-  )
+      test_writing test_ctxt info name writer mli ml)
 
 let tests =
-  "GObject Introspection Bind_struct tests" >:::
-  [
-    "Bind_struct append ctypes struct declaration" >:: test_append_ctypes_struct_declaration;
-  (*  "Bind_struct append ctypes struct field declarations" >:: test_append_ctypes_struct_field_declarations *)
-  ]
+  "GObject Introspection Bind_struct tests"
+  >::: [
+         "Bind_struct append ctypes struct declaration"
+         >:: test_append_ctypes_struct_declaration
+         (*  "Bind_struct append ctypes struct field declarations" >:: test_append_ctypes_struct_field_declarations *);
+       ]

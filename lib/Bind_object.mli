@@ -23,11 +23,14 @@ open Ctypes
 open Foreign
 open GObject_introspection
 
-val append_ctypes_object_declaration:
-  string -> Binding_utils.Sources.t -> unit
+val append_ctypes_object_declaration : string -> Binding_utils.Sources.t -> unit
 
-val append_ctypes_object_property_declarations:
-  string -> Object_info.t structure ptr -> Binding_utils.Sources.t -> string list -> unit
+val append_ctypes_object_property_declarations :
+  string ->
+  Object_info.t structure ptr ->
+  Binding_utils.Sources.t ->
+  string list ->
+  unit
 
 val parse_object_info :
   Base_info.t structure ptr -> Binding_utils.Sources.t -> string list -> unit

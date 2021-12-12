@@ -19,25 +19,21 @@
 open GI_bindings_generator
 open OUnit2
 
-let assert_equal_string str1 str2 =
-  assert_equal ~printer: (fun s -> s) str1 str2
+let assert_equal_string str1 str2 = assert_equal ~printer:(fun s -> s) str1 str2
 
 let assert_equal_boolean bool1 bool2 =
-  assert_equal ~printer: (fun s -> string_of_bool s) bool1 bool2
+  assert_equal ~printer:(fun s -> string_of_bool s) bool1 bool2
 
 let assert_equal_int int1 int2 =
-  assert_equal ~printer: (fun s -> string_of_int s) int1 int2
+  assert_equal ~printer:(fun s -> string_of_int s) int1 int2
 
 let assert_equal_or_greater int1 int2 =
-  assert_equal ~printer: (fun s ->
-    String.concat " " [string_of_int int1;
-                       "is not >=";
-                       string_of_int int2]
-  ) true (int1 >= int2)
+  assert_equal
+    ~printer:(fun s ->
+      String.concat " " [ string_of_int int1; "is not >="; string_of_int int2 ])
+    true (int1 >= int2)
 
-let is_travis = try
-  bool_of_string (Sys.getenv "TRAVIS_TESTS")
-  with _ -> false
+let is_travis = try bool_of_string (Sys.getenv "TRAVIS_TESTS") with _ -> false
 
 let assert_file_exists filename =
   assert_equal_boolean true (Sys.file_exists filename)
@@ -45,10 +41,11 @@ let assert_file_exists filename =
 let file_content_to_string in_ch =
   let rec read_line acc =
     try
-      let line = input_line in_ch in read_line (line :: acc)
-    with
-      End_of_file -> acc
-  in let lines = List.rev (read_line []) in
+      let line = input_line in_ch in
+      read_line (line :: acc)
+    with End_of_file -> acc
+  in
+  let lines = List.rev (read_line []) in
   String.concat "\n" lines
 
 let check_file_and_content name content =
@@ -59,7 +56,7 @@ let check_file_and_content name content =
   close_in input_ch
 
 let tmp_file suffix test_ctxt =
-  let (name, descr) = bracket_tmpfile ~suffix test_ctxt in
+  let name, descr = bracket_tmpfile ~suffix test_ctxt in
   Binding_utils.File.create_tmp (name, descr)
 
 let tmp_sources test_ctxt =

@@ -24,45 +24,41 @@ open Ctypes
 open Foreign
 open GObject_introspection
 
-val append_enum_type:
-  (string * string) list -> Binding_utils.File.t -> unit
+val append_enum_type : (string * string) list -> Binding_utils.File.t -> unit
 
-val append_enum_of_value_fn:
+val append_enum_of_value_fn :
   string -> string -> (string * string) list -> Binding_utils.Sources.t -> unit
 
-val append_enum_to_value_fn:
+val append_enum_to_value_fn :
   string -> string -> (string * string) list -> Binding_utils.Sources.t -> unit
 
-val append_enum_view:
-  string -> Binding_utils.Sources.t -> unit
+val append_enum_view : string -> Binding_utils.Sources.t -> unit
 
-val get_values_and_variants:
+val get_values_and_variants :
   Enum_info.t structure ptr -> (string * string) list
 
-val append_ctypes_enum_bindings:
+val append_ctypes_enum_bindings :
   string -> Enum_info.t structure ptr -> Binding_utils.Sources.t -> unit
 
-val append_flags_types:
-  (string * string) list -> Binding_utils.File.t -> unit
+val append_flags_types : (string * string) list -> Binding_utils.File.t -> unit
 
-val append_flags_list_to_value_fn:
+val append_flags_list_to_value_fn :
   string -> string -> Binding_utils.Sources.t -> unit
 
-val append_flags_list_of_value_fn:
+val append_flags_list_of_value_fn :
   string -> string -> (string * string) list -> Binding_utils.Sources.t -> unit
 
-val append_flags_view:
-  string -> Binding_utils.Sources.t -> unit
+val append_flags_view : string -> Binding_utils.Sources.t -> unit
 
-val append_ctypes_flags_bindings:
+val append_ctypes_flags_bindings :
   string -> Enum_info.t structure ptr -> Binding_utils.Sources.t -> unit
 
-(** Use Enum_info in order to generate Ctypes bindings.
-    It creates an enumname view and all the conversion functions. *)
 val parse_enum_info :
   Base_info.t structure ptr -> Binding_utils.Sources.t -> unit
-
 (** Use Enum_info in order to generate Ctypes bindings.
-    It creates an enumname_list view and all the conversion functions. *)
+    It creates an enumname view and all the conversion functions. *)
+
 val parse_flags_info :
   Base_info.t structure ptr -> Binding_utils.Sources.t -> unit
+(** Use Enum_info in order to generate Ctypes bindings.
+    It creates an enumname_list view and all the conversion functions. *)

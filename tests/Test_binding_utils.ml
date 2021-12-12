@@ -39,42 +39,50 @@ let test_escape_number_at_beginning test_ctxt =
 let test_ensure_valid_variable_name test_ctxt =
   let rec test = function
     | [] -> ()
-    | h :: q -> let reference = "_" ^ h in
-    let escaped = Binding_utils.ensure_valid_variable_name h in
-    assert_equal_string reference escaped
-  in test ["end"; "int"; "double"; "3D"]
+    | h :: q ->
+        let reference = "_" ^ h in
+        let escaped = Binding_utils.ensure_valid_variable_name h in
+        assert_equal_string reference escaped
+  in
+  test [ "end"; "int"; "double"; "3D" ]
 
 let test_lexer_snake_case test_ctxt =
-  let values = [
-    ("CapitalizedSnakeCase", "Capitalized_snake_case");
-    ("CAPITALizedSnakeCASe", "CAPITALized_snake_case");
-    ("", "");
-    ("Ca", "Ca");
-    ("IOChannel", "IOChannel");
-    ("PollFD", "Poll_fd");
-    ("SList", "SList");
-    ("IConv", "IConv");
-    ("MemVTable", "Mem_vtable");
-    ("DoubleIEEE754", "Double_ieee754");
-  ] in
+  let values =
+    [
+      ("CapitalizedSnakeCase", "Capitalized_snake_case");
+      ("CAPITALizedSnakeCASe", "CAPITALized_snake_case");
+      ("", "");
+      ("Ca", "Ca");
+      ("IOChannel", "IOChannel");
+      ("PollFD", "Poll_fd");
+      ("SList", "SList");
+      ("IConv", "IConv");
+      ("MemVTable", "Mem_vtable");
+      ("DoubleIEEE754", "Double_ieee754");
+    ]
+  in
   let rec _check = function
     | [] -> ()
-    | (str_to_test, str_result) :: values'->
+    | (str_to_test, str_result) :: values' ->
         let str_result' = Lexer.snake_case str_to_test in
         let _ = assert_equal_string str_result str_result' in
         _check values'
-  in _check values
+  in
+  _check values
 
 let test_string_pattern_remove test_ctxt =
-  let values = [
-    ("pattern", "pattern", "");
-    ("__pattern", "pattern", "__");
-    ("__pattern__pattern", "pattern", "____");
-    ] in
-  List.iter (fun (str, pattern, expected) ->
-    let ret = Binding_utils.string_pattern_remove str pattern in
-    assert_equal_string expected ret
-  ) values
+  let values =
+    [
+      ("pattern", "pattern", "");
+      ("__pattern", "pattern", "__");
+      ("__pattern__pattern", "pattern", "____");
+    ]
+  in
+  List.iter
+    (fun (str, pattern, expected) ->
+      let ret = Binding_utils.string_pattern_remove str pattern in
+      assert_equal_string expected ret)
+    values
 
 module UFile = Binding_utils.File
 module USources = Binding_utils.Sources
@@ -86,13 +94,13 @@ let test_file_create test_ctxt =
   let test_f = UFile.create pwd filename in
   let test_f_name = UFile.name test_f in
   let _ = assert_equal_string filename test_f_name in
-  let _ = assert_file_exists (String.concat "/" [pwd; test_f_name]) in
+  let _ = assert_file_exists (String.concat "/" [ pwd; test_f_name ]) in
   let _ = UFile.close test_f in
   Sys.remove filename
 
 let test_file_write_open_module test_ctxt =
   let filename = "test_file1" in
-  let path = (String.concat "/" [pwd; filename]) in
+  let path = String.concat "/" [ pwd; filename ] in
   let test_f = UFile.create pwd filename in
   let _ = UFile.write_open_module test_f "A_module" in
   let _ = UFile.close test_f in
@@ -102,7 +110,7 @@ let test_file_write_open_module test_ctxt =
 
 let test_file_buffer_add test_ctxt =
   let filename = "test_file4" in
-  let path = (String.concat "/" [pwd; filename]) in
+  let path = String.concat "/" [ pwd; filename ] in
   let str = "a test string" in
   let test_f = UFile.create pwd filename in
   let buff = UFile.buffer test_f in
@@ -114,7 +122,7 @@ let test_file_buffer_add test_ctxt =
 
 let test_file_buffer_add_line test_ctxt =
   let filename = "test_file5" in
-  let path = (String.concat "/" [pwd; filename]) in
+  let path = String.concat "/" [ pwd; filename ] in
   let str = "a test string" in
   let test_f = UFile.create pwd filename in
   let buff = UFile.buffer test_f in
@@ -126,7 +134,7 @@ let test_file_buffer_add_line test_ctxt =
 
 let test_file_buffer_add_comments test_ctxt =
   let filename = "test_file6" in
-  let path = (String.concat "/" [pwd; filename]) in
+  let path = String.concat "/" [ pwd; filename ] in
   let str = "a test string" in
   let test_f = UFile.create pwd filename in
   let buff = UFile.buffer test_f in
@@ -138,7 +146,7 @@ let test_file_buffer_add_comments test_ctxt =
 
 let test_file_bprintf test_ctxt =
   let filename = "test_file7" in
-  let path = (String.concat "/" [pwd; filename]) in
+  let path = String.concat "/" [ pwd; filename ] in
   let str = "a test string" in
   let test_f = UFile.create pwd filename in
   let buff = UFile.buffer test_f in
@@ -148,10 +156,9 @@ let test_file_bprintf test_ctxt =
   let _ = UFile.close test_f in
   Sys.remove path
 
-
 let test_file_create_sources test_ctxt =
   let filename = "test_file2" in
-  let path = (String.concat "/" [pwd; filename]) in
+  let path = String.concat "/" [ pwd; filename ] in
   let _ = USources.create pwd filename in
   let _ = assert_file_exists @@ filename ^ ".ml" in
   let _ = assert_file_exists @@ filename ^ ".mli" in
@@ -160,11 +167,11 @@ let test_file_create_sources test_ctxt =
 
 let test_file_create_ctypes_sources test_ctxt =
   let filename = "test_file3" in
-  let path = (String.concat "/" [pwd; filename]) in
+  let path = String.concat "/" [ pwd; filename ] in
   let sources = USources.create_ctypes pwd filename in
   let _ = USources.close sources in
   let mli_file = path ^ ".mli" in
-  let ml_file =  path ^ ".ml" in
+  let ml_file = path ^ ".ml" in
   let mli_content = "open Ctypes\n" in
   let ml_content = "open Ctypes\nopen Foreign\n" in
   let _ = check_file_and_content mli_file mli_content in
@@ -178,7 +185,7 @@ let test_sources_buffs_add_todo test_ctxt =
   let _ = USources.write_buffs sources in
   let _ = USources.close sources in
   let mli_file = USources.mli sources |> UFile.name in
-  let ml_file =  USources.ml sources |> UFile.name in
+  let ml_file = USources.ml sources |> UFile.name in
   let mli_content = "(*TODO : test*)" in
   let ml_content = "(*TODO : test*)" in
   let _ = check_file_and_content mli_file mli_content in
@@ -190,7 +197,7 @@ let test_sources_buffs_add_deprecated test_ctxt =
   let _ = USources.write_buffs sources in
   let _ = USources.close sources in
   let mli_file = USources.mli sources |> UFile.name in
-  let ml_file =  USources.ml sources |> UFile.name in
+  let ml_file = USources.ml sources |> UFile.name in
   let mli_content = "(*DEPRECATED : test*)" in
   let ml_content = "(*DEPRECATED : test*)" in
   let _ = check_file_and_content mli_file mli_content in
@@ -202,7 +209,7 @@ let test_sources_buffs_add_skipped test_ctxt =
   let _ = USources.write_buffs sources in
   let _ = USources.close sources in
   let mli_file = USources.mli sources |> UFile.name in
-  let ml_file =  USources.ml sources |> UFile.name in
+  let ml_file = USources.ml sources |> UFile.name in
   let mli_content = "(*SKIPPED : test*)" in
   let ml_content = "(*SKIPPED : test*)" in
   let _ = check_file_and_content mli_file mli_content in
@@ -214,14 +221,14 @@ let test_sources_buffs_add_comments test_ctxt =
   let _ = USources.write_buffs sources in
   let _ = USources.close sources in
   let mli_file = USources.mli sources |> UFile.name in
-  let ml_file =  USources.ml sources |> UFile.name in
+  let ml_file = USources.ml sources |> UFile.name in
   let mli_content = "(*test*)" in
   let ml_content = "(*test*)" in
   let _ = check_file_and_content mli_file mli_content in
   check_file_and_content ml_file ml_content
 
 let test_match_one_of test_ctxt =
-  let patterns = ["to*"; "Ho*"] in
+  let patterns = [ "to*"; "Ho*" ] in
   assert_equal_boolean true (Binding_utils.match_one_of "Hook" patterns);
   assert_equal_boolean false (Binding_utils.match_one_of "hook" patterns);
   assert_equal_boolean false (Binding_utils.match_one_of "_to" patterns)
@@ -231,27 +238,29 @@ let test_generate_n_meaningless_arg_names test_ctxt =
   assert_equal_string "arg1 arg2 arg3 arg4" args
 
 let tests =
-  "GObject Introspection Binding_utils tests" >:::
-  [
-    "Test escape OCaml keywords" >:: test_escape_OCaml_keywords;
-    "Test escape OCaml types" >:: test_escape_OCaml_types;
-    "Test escape Ctypes types" >:: test_escape_Ctypes_types;
-    "Test escape number at beginning" >:: test_escape_number_at_beginning;
-    "Test ensure valid variable name" >:: test_ensure_valid_variable_name;
-    "Test lexer snake case" >:: test_lexer_snake_case;
-    "Test remove" >:: test_string_pattern_remove;
-    "Test file create" >:: test_file_create;
-    "Test file write open module" >:: test_file_write_open_module;
-    "Test file create sources" >:: test_file_create_sources;
-    "Test file create ctypes sources" >:: test_file_create_ctypes_sources;
-    "Test file buffer add" >:: test_file_buffer_add;
-    "Test file buffer add line" >:: test_file_buffer_add_line;
-    "Test file buffer add comments" >:: test_file_buffer_add_comments;
-    "Test file bprintf" >:: test_file_bprintf;
-    "Test sources buffers add todo" >:: test_sources_buffs_add_todo;
-    "Test sources buffers add deprecated" >:: test_sources_buffs_add_deprecated;
-    "Test match one of" >:: test_match_one_of;
-    "Test sources buffers add skipped" >:: test_sources_buffs_add_skipped;
-    "Test sources buffers add comments" >:: test_sources_buffs_add_comments;
-    "Test generate n meaningless arg names" >:: test_generate_n_meaningless_arg_names
-  ]
+  "GObject Introspection Binding_utils tests"
+  >::: [
+         "Test escape OCaml keywords" >:: test_escape_OCaml_keywords;
+         "Test escape OCaml types" >:: test_escape_OCaml_types;
+         "Test escape Ctypes types" >:: test_escape_Ctypes_types;
+         "Test escape number at beginning" >:: test_escape_number_at_beginning;
+         "Test ensure valid variable name" >:: test_ensure_valid_variable_name;
+         "Test lexer snake case" >:: test_lexer_snake_case;
+         "Test remove" >:: test_string_pattern_remove;
+         "Test file create" >:: test_file_create;
+         "Test file write open module" >:: test_file_write_open_module;
+         "Test file create sources" >:: test_file_create_sources;
+         "Test file create ctypes sources" >:: test_file_create_ctypes_sources;
+         "Test file buffer add" >:: test_file_buffer_add;
+         "Test file buffer add line" >:: test_file_buffer_add_line;
+         "Test file buffer add comments" >:: test_file_buffer_add_comments;
+         "Test file bprintf" >:: test_file_bprintf;
+         "Test sources buffers add todo" >:: test_sources_buffs_add_todo;
+         "Test sources buffers add deprecated"
+         >:: test_sources_buffs_add_deprecated;
+         "Test match one of" >:: test_match_one_of;
+         "Test sources buffers add skipped" >:: test_sources_buffs_add_skipped;
+         "Test sources buffers add comments" >:: test_sources_buffs_add_comments;
+         "Test generate n meaningless arg names"
+         >:: test_generate_n_meaningless_arg_names;
+       ]

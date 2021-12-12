@@ -23,48 +23,83 @@ open Ctypes
 open Foreign
 open GObject_introspection
 
+val binding_constant_name : string -> string
 (** Returns the OCaml constant name from the C constant name. It just prepend
     "c_" to the C constant name.*)
-val binding_constant_name:
-  string -> string
 
-val append_boolean_constant:
-  string -> Constant_info.t structure ptr -> (Binding_utils.File.t * Binding_utils.File.t) -> unit
+val append_boolean_constant :
+  string ->
+  Constant_info.t structure ptr ->
+  Binding_utils.File.t * Binding_utils.File.t ->
+  unit
 
-val append_int8_constant:
-  string -> Constant_info.t structure ptr -> (Binding_utils.File.t * Binding_utils.File.t) -> unit
+val append_int8_constant :
+  string ->
+  Constant_info.t structure ptr ->
+  Binding_utils.File.t * Binding_utils.File.t ->
+  unit
 
-val append_uint8_constant:
-  string -> Constant_info.t structure ptr -> (Binding_utils.File.t * Binding_utils.File.t) -> unit
+val append_uint8_constant :
+  string ->
+  Constant_info.t structure ptr ->
+  Binding_utils.File.t * Binding_utils.File.t ->
+  unit
 
-val append_int16_constant:
-  string -> Constant_info.t structure ptr -> (Binding_utils.File.t * Binding_utils.File.t) -> unit
+val append_int16_constant :
+  string ->
+  Constant_info.t structure ptr ->
+  Binding_utils.File.t * Binding_utils.File.t ->
+  unit
 
-val append_uint16_constant:
-  string -> Constant_info.t structure ptr -> (Binding_utils.File.t * Binding_utils.File.t) -> unit
+val append_uint16_constant :
+  string ->
+  Constant_info.t structure ptr ->
+  Binding_utils.File.t * Binding_utils.File.t ->
+  unit
 
-val append_int32_constant:
-  string -> Constant_info.t structure ptr -> (Binding_utils.File.t * Binding_utils.File.t) -> unit
+val append_int32_constant :
+  string ->
+  Constant_info.t structure ptr ->
+  Binding_utils.File.t * Binding_utils.File.t ->
+  unit
 
-val append_uint32_constant:
-  string -> Constant_info.t structure ptr -> (Binding_utils.File.t * Binding_utils.File.t) -> unit
+val append_uint32_constant :
+  string ->
+  Constant_info.t structure ptr ->
+  Binding_utils.File.t * Binding_utils.File.t ->
+  unit
 
-val append_int64_constant:
-  string -> Constant_info.t structure ptr -> (Binding_utils.File.t * Binding_utils.File.t) -> unit
+val append_int64_constant :
+  string ->
+  Constant_info.t structure ptr ->
+  Binding_utils.File.t * Binding_utils.File.t ->
+  unit
 
-val append_uint64_constant:
-  string -> Constant_info.t structure ptr -> (Binding_utils.File.t * Binding_utils.File.t) -> unit
+val append_uint64_constant :
+  string ->
+  Constant_info.t structure ptr ->
+  Binding_utils.File.t * Binding_utils.File.t ->
+  unit
 
-val append_float_constant:
-  string -> Constant_info.t structure ptr -> (Binding_utils.File.t * Binding_utils.File.t) -> unit
+val append_float_constant :
+  string ->
+  Constant_info.t structure ptr ->
+  Binding_utils.File.t * Binding_utils.File.t ->
+  unit
 
-val append_double_constant:
-  string -> Constant_info.t structure ptr -> (Binding_utils.File.t * Binding_utils.File.t) -> unit
+val append_double_constant :
+  string ->
+  Constant_info.t structure ptr ->
+  Binding_utils.File.t * Binding_utils.File.t ->
+  unit
 
-val append_string_constant:
-  string -> Constant_info.t structure ptr -> (Binding_utils.File.t * Binding_utils.File.t) -> unit
+val append_string_constant :
+  string ->
+  Constant_info.t structure ptr ->
+  Binding_utils.File.t * Binding_utils.File.t ->
+  unit
 
-(** Use a Constant_info in order to generate code with Ctypes. C Constants
-    will be written as module values. *)
 val parse_constant_info :
   Base_info.t structure ptr -> Binding_utils.Sources.t -> unit
+(** Use a Constant_info in order to generate code with Ctypes. C Constants
+    will be written as module values. *)

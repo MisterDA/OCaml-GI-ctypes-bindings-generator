@@ -1,5 +1,4 @@
 (lang dune 2.9)
-(formatting disabled)
 (name gi-bindings-generator)
 (generate_opam_files true)
 (source (github cedlemo/OCaml-GI-ctypes-bindings-generator))

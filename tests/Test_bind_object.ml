@@ -24,39 +24,36 @@ open GObject_introspection
 let get_object_info namespace name =
   match Repository.require namespace () with
   | Error _ -> None
-  | Ok typelib ->
-    match Repository.find_by_name namespace name with
-    | None -> None
-    | Some (base_info) ->
-      match Base_info.get_type base_info with
-      | Bindings.Base_info.Object ->
-        let object_info = Object_info.from_baseinfo base_info in
-        Some object_info
-      | _ -> None
+  | Ok typelib -> (
+      match Repository.find_by_name namespace name with
+      | None -> None
+      | Some base_info -> (
+          match Base_info.get_type base_info with
+          | Bindings.Base_info.Object ->
+              let object_info = Object_info.from_baseinfo base_info in
+              Some object_info
+          | _ -> None))
 
 let object_test namespace name fn =
   match get_object_info namespace name with
   | None -> assert_equal_string name "No base info found"
-  | Some (info) -> fn info
+  | Some info -> fn info
 
 let test_append_ctypes_object_declaration test_ctxt =
   let namespace = "GObject" in
   let name = "Object" in
-  let writer = fun name info sources -> (
+  let writer name info sources =
     let _ = Bind_object.append_ctypes_object_declaration name sources in
     Binding_utils.Sources.write_buffs sources
-  )
   in
-  let mli_content = "type t\n\
-                     val t_typ : t typ\n" in
-  let ml_content = "type t = unit ptr\n\
-                    let t_typ : t typ = ptr void\n" in
+  let mli_content = "type t\nval t_typ : t typ\n" in
+  let ml_content = "type t = unit ptr\nlet t_typ : t typ = ptr void\n" in
   object_test namespace name (fun info ->
-    test_writing test_ctxt info name writer mli_content ml_content
-    )
+      test_writing test_ctxt info name writer mli_content ml_content)
 
 let tests =
-  "GObject Introspection Bind_object tests" >:::
-  [
-    "Test append Ctypes object declaration" >:: test_append_ctypes_object_declaration;
-  ]
+  "GObject Introspection Bind_object tests"
+  >::: [
+         "Test append Ctypes object declaration"
+         >:: test_append_ctypes_object_declaration;
+       ]

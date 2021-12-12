@@ -20,14 +20,13 @@ open OUnit2
 
 let () =
   run_test_tt_main
-  ("GObjectIntrospection" >:::
-    [
-      Test_bind_struct.tests;
-      Test_bind_enum.tests;
-      Test_bind_constant.tests;
-      Test_bind_union.tests;
-      Test_bind_function.tests;
-      Test_bind_object.tests;
-      Test_binding_utils.tests;
-    ]
-  )
+    ("GObjectIntrospection"
+    >::: [
+           Test_bind_struct.tests;
+           Test_bind_enum.tests;
+           Test_bind_constant.tests;
+           Test_bind_union.tests;
+           Test_bind_function.tests;
+           Test_bind_object.tests;
+           Test_binding_utils.tests;
+         ])

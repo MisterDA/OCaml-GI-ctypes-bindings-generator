@@ -24,52 +24,57 @@ open GObject_introspection
 let get_union_info namespace union_name =
   match Repository.find_by_name namespace union_name with
   | None -> None
-  | Some (base_info) ->
-    match Base_info.get_type base_info with
-    | Bindings.Base_info.Union -> let union_info = Union_info.from_baseinfo base_info in
-      Some union_info
-    | _ -> None
+  | Some base_info -> (
+      match Base_info.get_type base_info with
+      | Bindings.Base_info.Union ->
+          let union_info = Union_info.from_baseinfo base_info in
+          Some union_info
+      | _ -> None)
 
 let union_test namespace union_name fn =
   match get_union_info namespace union_name with
   | None -> assert_equal_string union_name "No base info found"
-  | Some (info) -> fn info
+  | Some info -> fn info
 
 let test_append_ctypes_union_declaration test_ctxt =
   let namespace = "GLib" in
   let name = "Mutex" in
-  let writer = fun name info sources ->
+  let writer name info sources =
     Bind_union.append_ctypes_union_declaration name sources;
     Binding_utils.Sources.write_buffs sources
   in
-  let mli_content = "type t\n\
-                     val t_typ : t union typ" in
-  let ml_content = "type t\n\
-                    let t_typ : t union typ = union \"Mutex\"" in
+  let mli_content = "type t\nval t_typ : t union typ" in
+  let ml_content = "type t\nlet t_typ : t union typ = union \"Mutex\"" in
   union_test namespace name (fun info ->
-      test_writing test_ctxt info name writer mli_content ml_content
-  )
+      test_writing test_ctxt info name writer mli_content ml_content)
 
 let test_append_ctypes_union_fields_declarations test_ctxt =
   let namespace = "GLib" in
   let name = "Mutex" in
-  let writer = fun name info sources ->
+  let writer name info sources =
     Bind_union.append_ctypes_union_fields_declarations name info sources [];
     Binding_utils.Sources.write_buffs sources
   in
-  let mli_content = "val f_p: (unit ptr, t union) field\n\
-                     val f_i: (Array.t structure, t union) field" in
-  let ml_content = "let f_p = field t_typ \"p\" (ptr void)\n\
-                    let f_i = field t_typ \"i\" (Array.t_typ)" in
+  let mli_content =
+    "val f_p: (unit ptr, t union) field\n\
+     val f_i: (Array.t structure, t union) field"
+  in
+  let ml_content =
+    "let f_p = field t_typ \"p\" (ptr void)\n\
+     let f_i = field t_typ \"i\" (Array.t_typ)"
+  in
   union_test namespace name (fun info ->
       (* TODO : Implement Binding_utils.type_info_to_bindings_types for C array
        * before re-enabling this.
        test_writing test_ctxt info name writer mli_content ml_content
-  *) ())
+       *)
+      ())
 
 let tests =
-  "GObject Introspection Bind_union tests" >:::
-  [
-    "Bind_union append ctypes union declaration" >:: test_append_ctypes_union_declaration;
-    "Bind_union append ctypes union fields declarations" >:: test_append_ctypes_union_fields_declarations
-  ]
+  "GObject Introspection Bind_union tests"
+  >::: [
+         "Bind_union append ctypes union declaration"
+         >:: test_append_ctypes_union_declaration;
+         "Bind_union append ctypes union fields declarations"
+         >:: test_append_ctypes_union_fields_declarations;
+       ]

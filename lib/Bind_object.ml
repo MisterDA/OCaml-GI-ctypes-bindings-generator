@@ -28,24 +28,20 @@ let append_ctypes_object_declaration name sources =
   File.bprintf ml "let t_typ : t typ = ptr void\n";
   Sources.buffs_add_eol sources
 
-let append_ctypes_object_property_declarations object_name info sources skip_types =
+let append_ctypes_object_property_declarations object_name info sources
+    skip_types =
   let open Binding_utils in
   let _mli = Sources.mli sources in
   let _ml = Sources.ml sources in
-  let append_setter_for prop_info =
-    ()
-  in
-  let append_getter_for prop_info =
-    ()
-  in
+  let append_setter_for prop_info = () in
+  let append_getter_for prop_info = () in
   let n = Object_info.get_n_properties info in
   let rec iterate_over_props index =
     if index = n then ()
-    else begin
+    else
       let prop_info = Object_info.get_property info index in
       let _ = append_setter_for prop_info in
       append_getter_for prop_info
-    end
   in
   iterate_over_props 0
 
@@ -55,20 +51,21 @@ let append_ctypes_object_methods_bindings object_name info sources skip_types =
     let mi = Object_info.get_method info i in
     let bi = Function_info.to_baseinfo mi in
     if Base_info.is_deprecated bi then ()
-    else (
-    match Base_info.get_name bi with
-    | None -> ()
-    | Some n ->
-        let c = Some (object_name, "t", "t_typ") in
-        Bind_function.append_ctypes_function_bindings n mi c sources skip_types
-  )
+    else
+      match Base_info.get_name bi with
+      | None -> ()
+      | Some n ->
+          let c = Some (object_name, "t", "t_typ") in
+          Bind_function.append_ctypes_function_bindings n mi c sources
+            skip_types
   done
 
 let parse_object_info info sources skip_types =
   let open Binding_utils in
   match get_binding_name info with
   | None -> ()
-  | Some name -> let info' = Object_info.from_baseinfo info in
-    append_ctypes_object_declaration name sources;
-    append_ctypes_object_methods_bindings name info' sources skip_types;
-    Sources.write_buffs sources
+  | Some name ->
+      let info' = Object_info.from_baseinfo info in
+      append_ctypes_object_declaration name sources;
+      append_ctypes_object_methods_bindings name info' sources skip_types;
+      Sources.write_buffs sources

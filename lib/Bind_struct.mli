@@ -23,17 +23,20 @@ open Ctypes
 open Foreign
 open GObject_introspection
 
-val append_ctypes_struct_declaration:
-  string -> Binding_utils.Sources.t -> unit
+val append_ctypes_struct_declaration : string -> Binding_utils.Sources.t -> unit
 
-val append_ctypes_struct_field_declarations:
-  string -> Struct_info.t structure ptr -> Binding_utils.Sources.t -> string list -> unit
+val append_ctypes_struct_field_declarations :
+  string ->
+  Struct_info.t structure ptr ->
+  Binding_utils.Sources.t ->
+  string list ->
+  unit
 
+val parse_struct_info :
+  Base_info.t structure ptr -> Binding_utils.Sources.t -> string list -> unit
 (** Use GIStructureInfo in order to generate Ctypes bindings.
   - For each structure, a module is created in a Structure_name.mli file and a Structure_name.ml file.
   - the OCaml type is named `Structure_name.t`
   - the Ctypes typ is named `Structure_name.t_typ`
   - the fields are named `f_field_name` (in order to avoid conflict with OCaml keywords).
 *)
-val parse_struct_info :
-  Base_info.t structure ptr -> Binding_utils.Sources.t -> string list -> unit
