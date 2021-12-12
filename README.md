@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/cedlemo/OCaml-GI-ctypes-bindings-generator.svg?branch=master)](https://travis-ci.org/cedlemo/OCaml-GI-ctypes-bindings-generator)
+[![License: GPL-3.0-or-later](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 # gi-bindings-generator OCaml package
 
