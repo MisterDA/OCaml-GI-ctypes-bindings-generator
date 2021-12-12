@@ -33,9 +33,6 @@ let filter_same_argument_type_as_container container_name
   let ctypes_typ' = string_pattern_remove ctypes_typ module_pattern in
   (ocaml_type', ctypes_typ')
 
-let check_if_types_are_not_from_core =
-  filter_same_argument_type_as_container "Core"
-
 type func_types =
   | Not_handled of string
   | Skipped of string
@@ -88,18 +85,6 @@ type arg_lists = {
 }
 
 type args = No_args | Args of arg_lists
-
-let has_in_arg = function
-  | No_args -> false
-  | Args args -> List.length args.in_list > 0
-
-let has_out_arg = function
-  | No_args -> false
-  | Args args -> List.length args.out_list > 0
-
-let has_in_out_arg = function
-  | No_args -> false
-  | Args args -> List.length args.in_out_list > 0
 
 let args_has search = function
   | No_args -> None
