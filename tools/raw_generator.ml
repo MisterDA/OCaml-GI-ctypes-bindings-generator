@@ -7,7 +7,7 @@ let n_args = Array.length Sys.argv
 let () =
   if n_args == 1 || n_args > 3 then (
     let message =
-      "Please provide a GObject Introspection namespace and optionnaly a \
+      "Please provide a GObject Introspection namespace and optionally a \
        version number."
     in
     print_endline message;

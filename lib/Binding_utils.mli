@@ -64,7 +64,7 @@ val get_binding_name : Base_info.t structure ptr -> string option
     gobject.)*)
 
 val string_pattern_remove : string -> string -> string
-(** Remove each occurence of a pattern in a string. *)
+(** Remove each occurrence of a pattern in a string. *)
 
 type type_strings = { ocaml : string; ctypes : string }
 (** Type strings representation used in the bindings for a Types tag. *)

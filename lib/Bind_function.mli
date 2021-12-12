@@ -51,7 +51,7 @@ type args = No_args | Args of arg_lists
 
 (* Get the escaped name (valid OCaml variable name) of the argument. Raise a Failure
  * exception. It is an error to try to get the name of the argument while I should
- * skeep / not implement the function bindings *)
+ * skip / not implement the function bindings *)
 val get_escaped_arg_names : arg list -> string list
 
 (* get the OCaml type of an argument and raise an exception if it is not implemented

@@ -29,8 +29,8 @@ val write_bindings_for :
 val write_constant_bindings_for :
   string -> ?version:string -> Binding_utils.Sources.t -> string list -> unit
 (** Generate all the bindings for the constants in the Core.ml/mli files
- *  @arg namespace
- *  @arg list of constants to skip. *)
+    @param namespace namespace
+    @param skipped list of constants to skip. *)
 
 val write_enum_and_flag_bindings_for :
   string -> ?version:string -> string -> unit -> unit
