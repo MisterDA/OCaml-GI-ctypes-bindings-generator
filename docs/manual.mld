@@ -1,0 +1,351 @@
+{0 OCaml-GI-ctypes-bindings-generator}
+
+The Loader module is used to load a namespace and generate automatically most of
+the Ctypes bindings.
+
+{1 Builder Code rules}
+
+{2 Constants}
+
+There are 2 kinds of constants described by a
+{{: https://gnome.pages.gitlab.gnome.org/gobject-introspection/girepository/gi-GIConstantInfo.html} [GIConstantInfo]}
+([Constant_info] module):
+{ul {- the ones that are directly in the main namespace;}
+    {- the ones that are related to an object or an interface.}}
+
+First, the module constants are generated as values in the {e core.mli} and
+{e core.ml} files. They can be used with [GLib.Core.a_constant] for example.
+The rest will be generated in the files of the object or of the interface.
+
+{2 Structures And Unions}
+{ul {- for each, a module is created in a {e mli} file and a {e ml} file;}
+    {- for a C name [MyStructName], the OCaml type is named [My_struct_name.t];}
+    {- for a C name [MyStructName], the Ctypes typ is named
+       [My_struct_name.t_typ];}
+    {- the fields are named [f_field_name] (in order to avoid conflict with
+       OCaml keywords).}}
+
+{2 Enumerations}
+
+{3 New implementation}
+
+In order to avoid cyclic dependencies at compile time, the idea is to create a
+module for each enums. For a C enum named [DayOfWeek], a pair of files called
+{e Day_of_week.mli} and {e Day_of_week.ml} are created for example.
+
+{4 Simple Enumerations}
+
+The bindings will use the "unsafe" form
+({{: https://discuss.ocaml.org/t/ctypes-enum-how-to-make-it-work/456/4?u=cedlemo} ref}).
+
+{@c[
+enum letters { AB, CD, EF };
+]}
+
+becomes in a {e Letters.ml} file:
+
+{@ocaml[
+type t =
+  | Ab
+  | Cd
+  | Ef
+
+(* Unsigned.uint32 -> t *)
+let of_value v =
+  if v = Unsigned.UInt32.of_int 0 then Ab
+  else if v = Unsigned.UInt32.of_int 1 then Cd
+  else if v = Unsigned.UInt32.of_int 2 then Ef
+  else raise (Invalid_argument "Unexpected Letters value")
+
+(* t -> Unsigned.uint32 *)
+let to_value = function
+  | Ab -> Unsigned.UInt32.of_int 0
+  | Cd -> Unsigned.UInt32.of_int 1
+  | Ef -> Unsigned.UInt32.of_int 2
+
+(* val t = letters typ *)
+let t_view = view ~read:letters_of_value ~write:letters_to_value uint32_t
+]}
+
+{4 Flags: enumerations for bitwise operations}
+
+The constants of those enumerations are generally used as OR'ed flags. The idea
+is to define a type with variants for all the constants that the enums contains.
+
+{@c[
+enum letters { AB, CD, EF };
+]}
+
+becomes in a {e Letters.ml} file:
+
+{@ocaml[
+type t =
+  | Ab
+  | Cd
+  | Ef
+
+type t_list = t list
+
+(* Unsigned.uint32 -> t *)
+let of_value v =
+  if v = Unsigned.UInt32.of_int 0 then Ab
+  else if v = Unsigned.UInt32.of_int 1 then Cd
+  else if v = Unsigned.UInt32.of_int 2 then Ef
+  else raise (Invalid_argument "Unexpected Letter value")
+
+(* t -> Unsigned.uint32 *)
+let to_value = function
+  | Ab -> Unsigned.UInt32.of_int 0
+  | Cd -> Unsigned.UInt32.of_int 1
+  | Ef -> Unsigned.UInt32.of_int 2
+
+(* t_list -> Unsigned.uint32*)
+let list_to_value flags =
+  let rec logor_flags l acc =
+    match l with
+    | [] -> acc
+    | f :: q -> let v = optionflags_to_value f in
+      let acc' = logor acc v in
+      logor_flags q acc'
+  in
+  logor_flags flags 0
+
+(* Unsigned.uint32 -> t_list *)
+let list_of_value v =
+  let open Unsigned.UInt32 in
+  let flags = [] in
+  if ((logand v (of_int 0)) != zero) then ignore (Ab :: flags);
+  if ((logand v (of_int 1)) != zero) then ignore (Cd :: flags);
+  if ((logand v (of_int 2)) != zero) then ignore (Ef :: flags);
+  flags
+
+(* val t_list_view = t_list typ *)
+let t_list_view =
+  view ~read:letters_list_of_value ~write:letters_list_to_value uint32_t
+]}
+
+{3 Previous implementation}
+
+All the code related to the enum bindings where in the Core modules.
+
+{4 Simple Enumerations}
+
+The bindings will use the "unsafe" form
+({{: https://discuss.ocaml.org/t/ctypes-enum-how-to-make-it-work/456/4?u=cedlemo} ref}).
+
+{@c[
+enum letters { AB, CD, EF };
+]}
+
+becomes:
+
+{@ocaml[
+type letters =
+  | Ab
+  | Cd
+  | Ef
+
+(* Unsigned.uint32 -> letters *)
+let letters_of_value v =
+  if v = Unsigned.UInt32.of_int 0 then Ab
+  else if v = Unsigned.UInt32.of_int 1 then Cd
+  else if v = Unsigned.UInt32.of_int 2 then Ef
+  else raise (Invalid_argument "Unexpected Letters value")
+
+(* letters -> Unsigned.uint32 *)
+let letters_to_value = function
+  | Ab -> Unsigned.UInt32.of_int 0
+  | Cd -> Unsigned.UInt32.of_int 1
+  | Ef -> Unsigned.UInt32.of_int 2
+
+(* val letters = letters typ *)
+let letters =
+  view ~read:letters_of_value ~write:letters_to_value uint32_t
+]}
+
+{4 Flags: enumerations for bitwise operations}
+
+The constants of those enumerations are generally used as OR'ed flags. The idea
+is to define a type with variants for all the constants that the enums contains.
+
+{@c[
+enum letters { AB, CD, EF };
+]}
+
+becomes:
+
+{@ocaml[
+type letters =
+  | Ab
+  | Cd
+  | Ef
+
+type letters_list = letters list
+
+(* Unsigned.uint32 -> letters *)
+let letters_of_value v =
+  if v = Unsigned.UInt32.of_int 0 then Ab
+  else if v = Unsigned.UInt32.of_int 1 then Cd
+  else if v = Unsigned.UInt32.of_int 2 then Ef
+  else raise (Invalid_argument "Unexpected Letter value")
+
+(* letters -> Unsigned.uint32 *)
+let letters_to_value = function
+  | Ab -> Unsigned.UInt32.of_int 0
+  | Cd -> Unsigned.UInt32.of_int 1
+  | Ef -> Unsigned.UInt32.of_int 2
+
+(* letters_list -> Unsigned.uint32*)
+let letters_list_to_value flags =
+  let rec logor_flags l acc =
+    match l with
+    | [] -> acc
+    | f :: q ->
+      let v = flags_to_value f in
+      let acc' = logor acc v in
+      logor_flags q acc'
+  in
+  logor_flags flags 0
+
+(* Unsigned.uint32 -> letters_list *)
+let letters_list_of_value v =
+  let open Unsigned.UInt32 in
+  let flags = [] in
+  if ((logand v (of_int 0)) != zero) then ignore (Ab :: flags);
+  if ((logand v (of_int 1)) != zero) then ignore (Cd :: flags);
+  if ((logand v (of_int 2)) != zero) then ignore (Ef :: flags);
+  flags
+
+(* val letters_list = letters_list typ *)
+let letters_list = view ~read:letters_list_of_value ~write:letters_list_to_value uint32_t
+]}
+
+{1 Functions}
+
+Functions are described by [GObject_introspection.Function_info] and
+[GObject_introspection.Callable_info]. The Loader differenciate the main module
+functions and the methods. The main module functions are implemeneted as
+[Namespace.Core.my_function] while the methods which are related to a
+{b container} (i.e., a structure, an object, …) are implemented as
+[Namespace.My_container.my_method]. Here are two examples:
+
+{ul
+{- {{: https://docs.gtk.org/glib/type_func.Date.get_sunday_weeks_in_year.html} [g_date_get_sunday_week_in_year]}
+   will be implemented as [GLib.Core.get_sunday_week_of_year];}
+{- {{: https://docs.gtk.org/glib/method.Checksum.get_string.html} [g_checksum_get_string]}
+   will be implemented as [GLib.Checksum.get_string].  }}
+
+The former are generally represented as [Base_info.Function] when the [Loader]
+iterates through the toplevel [Base_info]. The later are found with the
+[get_method] and [get_n_methods] of entities like [Structure_info] or
+[Object_info]. The way the bindings are generated for each is the same, it is
+just where they are created that is different.
+
+{3 Functions with only {e in} arguments}
+
+The simpler case. All the arguments of the function are used by the user to give
+data. Example:
+
+{{: https://docs.gtk.org/glib/type_func.Date.get_sunday_weeks_in_year.html} [g_date_get_sunday_week_in_year]}
+is implemented like this in OCaml:
+
+{@ocaml[
+(* mli signature *)
+val date_get_sunday_weeks_in_year:
+  Unsigned.uint16 -> Unsigned.uint8
+(* ml implementation *)
+let date_get_sunday_weeks_in_year =
+  foreign "g_date_get_sunday_weeks_in_year" (uint16_t @-> returning (uint8_t))
+]}
+
+Now this kind of function can return
+{{: https://docs.gtk.org/glib/struct.Error.html} [GError]}
+like
+{{: https://docs.gtk.org/glib/type_func.Dir.make_tmp.html} [g_dir_make_tmp]}.
+
+In OCaml:
+
+{@ocaml[
+let dir_make_tmp tmpl =
+  let dir_make_tmp_raw =
+    foreign "g_dir_make_tmp" (string_opt @-> ptr (ptr_opt Error.t_typ) @-> returning (string_opt))
+  in
+  let err_ptr_ptr = allocate (ptr_opt Error.t_typ) None in
+  let value = dir_make_tmp_raw tmpl err_ptr_ptr in
+  match (!@ err_ptr_ptr) with
+  | None -> Ok value
+  | Some _ -> let err_ptr = !@ err_ptr_ptr in
+    let _ = Gc.finalise (function Some e -> Error.free e | None -> () ) err_ptr in
+    Error (err_ptr)
+]}
+
+{2 Functions with {e out} arguments.}
+
+Out arguments are arguments used to get data from a function like
+{{: https://docs.gtk.org/glib/method.DateTime.get_ymd.html} [g_date_time_get_ymd]}.
+
+In OCaml:
+
+{@ocaml[
+(* mli signature *)
+val get_ymd :
+  t structure ptr -> (int32 * int32 * int32)
+(* ml *)
+let get_ymd self =
+  let year_ptr = allocate int32_t Int32.zero in
+  let month_ptr = allocate int32_t Int32.zero in
+  let day_ptr = allocate int32_t Int32.zero in
+  let get_ymd_raw =
+    foreign "g_date_time_get_ymd" (ptr t_typ @-> ptr (int32_t) @-> ptr (int32_t) @-> ptr (int32_t) @-> returning void)
+  in
+  let ret = get_ymd_raw self year_ptr month_ptr day_ptr in
+  let year = !@ year_ptr in
+  let month = !@ month_ptr in
+  let day = !@ day_ptr in
+  (year, month, day)
+]}
+
+Now some of those functions can throw
+{{: https://docs.gtk.org/glib/struct.Error.html} [GError]}
+too like
+{{: https://docs.gtk.org/glib/func.filename_from_uri.html} [g_filename_from_uri]}.
+
+{@ocaml[
+(* mli signature *)
+val filename_from_uri :
+  string -> (string option * string option, Error.t structure ptr option) result
+
+(* ml *)
+let filename_from_uri uri =
+  let hostname_ptr = allocate string_opt None in
+  let err_ptr_ptr = allocate (ptr_opt Error.t_typ) None in
+  let filename_from_uri_raw =
+    foreign "g_filename_from_uri" (string @-> ptr (string_opt) @-> ptr (ptr_opt Error.t_typ) @-> returning (string_opt))
+  in
+  let ret = filename_from_uri_raw uri hostname_ptr err_ptr_ptr in
+  let get_ret_value () =
+    let hostname = !@ hostname_ptr in
+    (ret, hostname)
+  in
+  match (!@ err_ptr_ptr) with
+  | None -> Ok (get_ret_value ())
+  | Some _ -> let err_ptr = !@ err_ptr_ptr in
+    let _ = Gc.finalise (function | Some e -> Error.free e | None -> () ) err_ptr in
+    Error (err_ptr)
+]}
+
+{2 Functions with {e in/out} arguments}
+
+To be implemented.
+
+{2 Patterns}
+
+{ul
+{- Some patterns remain:
+   {ul
+   {- functions that return [bool] with {e out} arguments should not return in
+      OCaml the tuple [(boolean value, out_arg1, out_arg2)]. A rule must be
+      created to filter and transform the return value to [out_arg1 type
+      option].}}}
+{- When there are some buffer with name [str], [str_len], the [Loader] should
+   generate instructions to construct an OCaml string with this.}}

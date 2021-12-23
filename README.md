@@ -11,40 +11,12 @@ Ctypes bindings of any C GObject libraries (not all but at least a big part).
 
 ## gi-bindings-generator and Dune (jbuilder)
 
-Dune allows to easily use a [custom code generator](http://dune.readthedocs.io/en/latest/quick-start.html#using-a-custom-code-generator). Let's take the example
-of the [gi-glib2 package : OCaml-GLib2 ctypes bindings](https://github.com/cedlemo/OCaml-GLib2).
+Dune allows to easily use a
+[custom code generator](http://dune.readthedocs.io/en/latest/quick-start.html#using-a-custom-code-generator).
+Let's take the example of the
+[gi-glib2 package: OCaml-GLib2 ctypes bindings](https://github.com/cedlemo/OCaml-GLib2).
 
-Here is the directory tree of the repository:
-
-```
-λ › tree                                                                                                                                                                                                  OCaml-c/OCaml-GLib2  dllist_string
-.
-├── config
-│   ├── discover.ml
-│   └── jbuild
-├── COPYING
-├── generator
-│   ├── gen.ml
-│   └── jbuild
-├── gi-glib2.opam
-├── gpl-3.0.txt
-├── lib
-│   ├── Core.ml
-│   ├── Dllist.ml
-│   ├── dyn_load_constants_stubs.c
-│   └── jbuild
-├── README.md
-├── tests
-│   ├── jbuild
-│   ├── ...
-├── tools
-│   ├── jbuild
-│   └── list_targets.ml
-└── travis
-    ├── ...
-```
-
-All the code of the bindings will be in the *lib/* directory. The *jbuild* file
+All the code of the bindings will be in the *lib/* directory. The *dune* file
 of this directory define the rules to construct the lib. In it there is this part:
 
 ```sexp
@@ -105,17 +77,17 @@ let functions = ["random_double"; "random_double_range";
 let sources = Loader.generate_files ("Core" ^ files_suffix)
 
 let () =
-  let _ = Loader.write_constant_bindings_for namespace sources const_to_skip in
-  let _ = Loader.write_function_bindings_for namespace sources functions in
-  let _ = Loader.write_enum_and_flag_bindings_for namespace in
-  let _ = Loader.write_bindings_for namespace data_structures in
+  Loader.write_constant_bindings_for namespace sources const_to_skip;
+  Loader.write_function_bindings_for namespace sources functions;
+  Loader.write_enum_and_flag_bindings_for namespace;
+  Loader.write_bindings_for namespace data_structures;
   BG.Binding_utils.Sources.close sources
 ```
 
 After that when you build your lib, all the files are generated and added in
 the *_build/default/lib* directory before the compilation and test part.
 
-## Try:
+## Try
 
 ```
 git clone git@github.com:cedlemo/OCaml-GObject-Introspection
@@ -123,29 +95,6 @@ opam pin add gobject-introspection OCaml-GObject-Introspection
 git clone git@github.com:cedlemo/OCaml-GI-ctypes-bindings-generator
 ```
 
-## API:
+## Documentation
 
 https://cedlemo.github.io/OCaml-GI-ctypes-bindings-generator/
-
-## Wiki :
-
-https://github.com/cedlemo/OCaml-GI-ctypes-bindings-generator/wiki#introduction
-
-###  table of content.
-
-- [GI_bindings_generator.Loader](https://github.com/cedlemo/OCaml-GI-ctypes-bindings-generator/wiki)
-  - [Loader Implementation](https://github.com/cedlemo/OCaml-GI-ctypes-bindings-generator/wiki#loader-implementation)
-  - [Loader Progress](https://github.com/cedlemo/OCaml-GI-ctypes-bindings-generator/wiki#loader-progress)
-    - [Builders Started](https://github.com/cedlemo/OCaml-GI-ctypes-bindings-generator/wiki#builders-started)
-    - [Builders Next](https://github.com/cedlemo/OCaml-GI-ctypes-bindings-generator/wiki#builders-next)
-  - [Builder Code rules](https://github.com/cedlemo/OCaml-GI-ctypes-bindings-generator/wiki#builder-code-rules)
-    - [Module constants](https://github.com/cedlemo/OCaml-GI-ctypes-bindings-generator/wiki#module-constants)
-    - [Structures and Unions](https://github.com/cedlemo/OCaml-GI-ctypes-bindings-generator/wiki#structures-and-unions)
-    - [Enumerations](https://github.com/cedlemo/OCaml-GI-ctypes-bindings-generator/wiki#enumerations)
-      - [Simple Enumerations](https://github.com/cedlemo/OCaml-GI-ctypes-bindings-generator/wiki#simple-enumerations)
-      - [Flags : enumerations for bitwise operations](https://github.com/cedlemo/OCaml-GI-ctypes-bindings-generator/wiki#flags--enumerations-for-bitwise-operations)
-    - [Functions](https://github.com/cedlemo/OCaml-GI-ctypes-bindings-generator/wiki#functions)
-      - [Functions with only in arguments](https://github.com/cedlemo/OCaml-GI-ctypes-bindings-generator/wiki#functions-with-only-in-arguments)
-      - [Functions with out arguments](https://github.com/cedlemo/OCaml-GI-ctypes-bindings-generator/wiki#functions-with-out-arguments)
-      - [Functions with in/out arguments](https://github.com/cedlemo/OCaml-GI-ctypes-bindings-generator/wiki#functions-with-inout-arguments)
-      - [Recognizable patterns in functions](https://github.com/cedlemo/OCaml-GI-ctypes-bindings-generator/wiki#patterns)
