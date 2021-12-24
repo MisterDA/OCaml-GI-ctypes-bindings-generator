@@ -1,0 +1,3 @@
+[submodule "OCaml-GObject-Introspection"]
+	path = OCaml-GObject-Introspection
+	url = https://github.com/MisterDA/OCaml-GObject-Introspection.git
