@@ -2,19 +2,25 @@ module BG = GI_bindings_generator
 module Loader = BG.Loader
 module GI = GObject_introspection
 
-let n_args = Array.length Sys.argv
+let usage_msg =
+  "raw_generator.exe <GObject Introspection namespace> [version number]"
+
+let namespace = ref ""
+let version = ref None
 
 let () =
-  if n_args == 1 || n_args > 3 then (
-    let message =
-      "Please provide a GObject Introspection namespace and optionally a \
-       version number."
-    in
-    print_endline message;
+  let n = ref 0 in
+  Arg.parse []
+    (fun arg ->
+      if !n = 0 then namespace := arg
+      else if !n = 1 then version := Some arg
+      else raise (Arg.Bad usage_msg);
+      incr n)
+    usage_msg;
+  if !n < 1 then (
+    prerr_endline usage_msg;
     exit 1)
 
-let namespace = Sys.argv.(1)
-let version = if n_args = 3 then Some Sys.argv.(2) else None
 let dest_dir = "./"
 let sources = Loader.generate_files dest_dir "Core"
 
@@ -33,23 +39,18 @@ let get_data_structures_and_functions namespace ?version () =
               match Base_info.get_type info with
               | Bindings.Base_info.Function ->
                   get_names (index + 1) data_structures (name :: functions)
-              | Bindings.Base_info.Object | Bindings.Base_info.Boxed
-              | Bindings.Base_info.Struct ->
+              | Object | Boxed | Struct ->
                   get_names (index + 1) (name :: data_structures) functions
-              | Bindings.Base_info.Enum | Bindings.Base_info.Flags
-              | Bindings.Base_info.Constant | Bindings.Base_info.Union
-              | Bindings.Base_info.Callback | Bindings.Base_info.Invalid
-              | Bindings.Base_info.Value | Bindings.Base_info.Signal
-              | Bindings.Base_info.Vfunc | Bindings.Base_info.Property
-              | Bindings.Base_info.Field | Bindings.Base_info.Arg
-              | Bindings.Base_info.Type | Bindings.Base_info.Unresolved
-              | Bindings.Base_info.Invalid_0 | Bindings.Base_info.Interface ->
+              | Enum | Flags | Constant | Union | Callback | Invalid | Value
+              | Signal | Vfunc | Property | Field | Arg | Type | Unresolved
+              | Invalid_0 | Interface ->
                   get_names (index + 1) data_structures functions)
           | None -> get_names (index + 1) data_structures functions
       in
       get_names 0 [] []
 
 let () =
+  let namespace = !namespace and version = !version in
   Loader.write_constant_bindings_for namespace ?version sources [];
   Loader.write_enum_and_flag_bindings_for namespace ?version dest_dir ();
   let data_structures, functions =
