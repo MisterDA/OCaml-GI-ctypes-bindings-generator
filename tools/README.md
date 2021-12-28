@@ -9,11 +9,10 @@ loader can be found here: <https://github.com/cedlemo/OCaml-GLib2>.
 ### Build
 
 ```
-dune build tools/raw_generator.exe
-cd tools/GLib
+mkdir -p tools/GLib && cd tools/GLib
 dune exec -- ../raw_generator.exe GLib
-cd ../Gio
+cd .. && mkdir -p tools/Gio && cd tools/Gio
 dune exec -- ../raw_generator.exe Gio
-cd ../Gtk3
+cd .. && mkdir -p tools/Gtk3 && cd tools/Gtk3
 dune exec -- ../raw_generator.exe Gtk 3.0
 ```
